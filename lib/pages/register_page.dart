@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:real_time_chat/helpers/monstrar_alerta.dart';
+import 'package:real_time_chat/services/auth_services.dart';
 import 'package:real_time_chat/widgets/botonAzul.dart';
 import 'package:real_time_chat/widgets/custom_input.dart';
 import 'package:real_time_chat/widgets/labelslogin.dart';
@@ -49,6 +52,7 @@ class __FormState extends State<_Form> {
   final passwordcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 25),
@@ -75,12 +79,20 @@ class __FormState extends State<_Form> {
 
           //TODO Crear boton
           BotonAzul(
-            text: 'Registrarse',
-            onPresseds: () {
-              print(emailController.text);
-              print(passwordcontroller.text);
-            },
-          )
+             text: 'Crear cuenta',
+             onPresseds: authService.autenticando ? ()=>{} : () async {
+             
+               var registroOk = await authService.register(nameController.text.trim(), emailController.text.trim(), passwordcontroller.text.trim());
+
+               if ( registroOk == true ) {
+                //  TODO: Conectar socket server
+                Navigator.pushReplacementNamed(context, 'usuarios');
+               } else {
+                 mostrarAlerta(context, 'Registro incorrecto', registroOk.toString() );
+               }
+
+             },
+           )
         ],
       ),
     );

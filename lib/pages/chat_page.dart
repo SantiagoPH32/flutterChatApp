@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:real_time_chat/widgets/chatmenssage.dart';
@@ -112,7 +110,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   _handleSubmit(String texto) {
     if (texto.length == 0) return;
 
-    print(texto);
+   
     _chatControlles.clear();
     _focusNode.requestFocus();
 

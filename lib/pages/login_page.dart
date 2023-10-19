@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:real_time_chat/helpers/monstrar_alerta.dart';
+import 'package:real_time_chat/services/auth_services.dart';
 import 'package:real_time_chat/widgets/botonAzul.dart';
 import 'package:real_time_chat/widgets/custom_input.dart';
 import 'package:real_time_chat/widgets/labelslogin.dart';
@@ -48,6 +51,7 @@ class __FormState extends State<_Form> {
   final passwordcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 25),
@@ -69,10 +73,23 @@ class __FormState extends State<_Form> {
           //TODO Crear boton
           BotonAzul(
             text: 'Iniciar Sesión',
-            onPresseds: () {
-              print(emailController.text);
-              print(passwordcontroller.text);
-            },
+            onPresseds: authService.autenticando
+                ? null
+                : () async {
+                    FocusScope.of(context).unfocus();
+                    final loginOk = await authService.login(
+                        emailController.text.trim(),
+                        passwordcontroller.text.trim());
+
+                    if (loginOk) {
+                      //navegar a otra pantalla
+                      Navigator.pushReplacementNamed(context, 'usuarios');
+                      //TODO:Conectar a nuestro socket server
+                    } else {
+                      mostrarAlerta(context, 'Login incorrecto',
+                          'Revise sus credenciales');
+                    }
+                  },
           )
         ],
       ),

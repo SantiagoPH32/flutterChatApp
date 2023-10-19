@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:real_time_chat/models/usuario.dart';
+import 'package:real_time_chat/services/auth_services.dart';
 
 class UsuariosPage extends StatefulWidget {
   @override
@@ -26,10 +28,13 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+    final usuario = authService.usuario;
+
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            'Mi nombre',
+            usuario?.nombre ?? 'Sin Nombre',
             style: TextStyle(color: Colors.black45),
           ),
           elevation: 1,
@@ -39,7 +44,14 @@ class _UsuariosPageState extends State<UsuariosPage> {
               Icons.exit_to_app,
               color: Colors.black,
             ),
-            onPressed: () {},
+            onPressed: () {
+              //Todo Desconectarnos del socket
+
+              //logout
+
+              Navigator.pushReplacementNamed(context, 'login');
+              AuthService.deleteToken();
+            },
           ),
           actions: [
             Container(
